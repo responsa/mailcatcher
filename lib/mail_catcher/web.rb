@@ -22,7 +22,7 @@ class MailCatcher::Web < Sinatra::Base
     if request.websocket?
       request.websocket do |websocket|
         websocket.onopen do
-          subscription = MailCatcher::Events::MessageAdded.subscribe { |message| websocket.send_message message.to_json }
+          subscription = MailCatcher::Events::MessageAdded.subscribe { |message| websocket.send_data message.to_json }
 
           websocket.onclose do
             MailCatcher::Events::MessageAdded.unsubscribe subscription
