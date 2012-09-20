@@ -39,7 +39,7 @@ Gem::Specification.new do |s|
   s.add_dependency "sinatra", "~> 1.2"
   s.add_dependency "sqlite3", "~> 1.3"
   s.add_dependency "thin"
-  s.add_dependency "skinny"
+  s.add_dependency "sinatra-websocket"
 
   s.add_development_dependency "coffee-script"
   s.add_development_dependency "compass"

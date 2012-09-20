@@ -3,11 +3,7 @@ require 'pathname'
 require 'net/http'
 require 'uri'
 
-require 'skinny'
-
-class Sinatra::Request
-  include Skinny::Helpers
-end
+require 'sinatra-websocket'
 
 class MailCatcher::Web < Sinatra::Base
   set :root, Pathname.new(__FILE__).dirname.parent.parent
@@ -24,13 +20,15 @@ class MailCatcher::Web < Sinatra::Base
 
   get '/messages' do
     if request.websocket?
-      request.websocket!(
-        :on_start => proc do |websocket|
+      request.websocket do |websocket|
+        websocket.onopen do
           subscription = MailCatcher::Events::MessageAdded.subscribe { |message| websocket.send_message message.to_json }
-          websocket.on_close do |websocket|
+
+          websocket.onclose do
             MailCatcher::Events::MessageAdded.unsubscribe subscription
           end
-        end)
+        end
+      end
     else
       MailCatcher::Mail.messages.to_json
     end
